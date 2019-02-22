@@ -1,123 +1,118 @@
-'use strict';
-var express = require('express');
-var sqlite3 = require('sqlite3').verbose();
-var node = require("deasync");
-var row = "";
-var app = express();
-// var xml = require('xml');
+const port = 3000;
 
-node.loop = node.runLoopOnce;
+const express = require('express');
+const sqlite3 = require('sqlite3');
+const js2xmlparser = require('js2xmlparser');
 
-// Connect to databasefil
-var db = new sqlite3.Database('./bokbase', (err) => {
-    if (err) {
-        return console.error(err.message);
-    }
-    console.log('Connected to the in-memory SQlite database.\n');
+const db = new sqlite3.Database('books.db');
+const app = express();
+
+
+app.get('/', (req, res) => {
+    res.send('Default route');
 });
 
-app.listen(7777, function() {
-    console.log('Server started on port 7777');
-});
+app.get('/authors/:authorid', (req, res) => {
+    const authorLookup = req.params.authorid;
 
-app.get('/authors/all', function(req, res) {
-
-    res.set('Content-type', 'text/xml');
-    var xmlFile = '<?xml version="1.0" encoding="UTF-8"?>';
-    xmlFile += '<authorlist>';
-    var done = 0;
-    var SQL = `SELECT authorID as id,
-        firstname as fName,
-        lastname as lName,
-        nationality as nat FROM author`;
-
-    db.serialize(function() {
-        db.each(SQL, (err, row) => {
-            if (err) {
-                console.error(err.message);
+    db.all(
+        'SELECT * FROM author WHERE authorID=$authorID',
+        {
+            $authorID: authorLookup
+        },
+        (err, rows) => {
+            //console.log(rows);
+            if(rows.length > 0){
+                res.send(js2xmlparser.parse("author", rows));
+            } 
+            else {
+                res.send("Couldn't find anything...")
             }
-            xmlFile += '<author>';
-            xmlFile += '<authorid>' + row.id + '</authorid>';
-            xmlFile += '<firstname>' + row.fName + '</firstname>';
-            xmlFile += '<lastname>' + row.lName + '</lastname>';
-            xmlFile += '<nationality>' + row.nat + '</nationality>'
-            xmlFile += '</author>';
-            done = 1;
-        });
-
-        while(!done) {
-            node.loop();
         }
-
-        xmlFile += '</authorlist>';
-        res.send(xmlFile);
-    });
+    );
 });
 
-app.get('/books/all', function(req, res) {
+app.get('/authors', (req, res) => {
+    //const authorsLookup = req.params.authors;
 
-    res.set('Content-type', 'text/xml');
-    var xmlFile = '<?xml version="1.0" encoding="UTF-8"?>';
-    xmlFile += '<booklist>';
-    var done = 0;
-    var SQL = `SELECT bookID as id,
-        title as title,
-        authorID as aId FROM book`;
-
-    db.serialize(function() {
-        db.each(SQL, (err, row) => {
-            if (err) {
-                console.error(err.message);
+    db.all(
+        'SELECT * FROM author',
+        (err, rows) => {
+            console.log(rows);
+            if(rows.length > 0){
+                //res.send(rows);
+                res.send(js2xmlparser.parse("authors", rows));
+            } 
+            else {
+                res.send("Couldn't find anything...")
             }
-            xmlFile += '<book>';
-            xmlFile += '<bookid>' + row.id + '</bookid>';
-            xmlFile += '<title>' + row.title + '</title>';
-            xmlFile += '<authorId>' + row.aId + '</authorId>';
-            xmlFile += '</book>';
-            done = 1;
-        });
-
-        while(!done) {
-            node.loop();
         }
-
-        xmlFile += '</booklist>';
-        res.send(xmlFile);
-    });
+    );
 });
 
+app.get('/books/:bookid', (req, res) => {
+    const bookLookup = req.params.bookid;
 
-app.get('/books/:bookId', function(req, res) {
-
-    res.set('Content-type', 'text/xml');
-    var bookIdFromRequest = req.param('bookId');
-    console.log("bookId from request: " + bookIdFromRequest);
-    var SQL = `SELECT bookID as id,
-        title as title,
-        authorID as aId FROM book
-        WHERE bookID = ?`;
-    var xmlFile = '<?xml version="1.0" encoding="UTF-8"?>';
-
-    db.serialize(function() {
-        db.get(SQL, [bookIdFromRequest], (err, row) => {
-            if (err) {
-                console.error(err.message);
+    db.all(
+        'SELECT * FROM book WHERE bookID=$bookID',
+        {
+            $bookID: bookLookup
+        },
+        (err, rows) => {
+            //console.log(rows);
+            if(rows.length > 0){
+                res.send(js2xmlparser.parse("book", rows));
+            } 
+            else {
+                res.send("Couldn't find anything...")
             }
-            xmlFile += '<book>';
-            xmlFile += '<bookid>' + row.id + '</bookid>';
-            xmlFile += '<title>' + row.title + '</title>';
-            xmlFile += '<authorId>' + row.aId + '</authorId>';
-            xmlFile += '</book>';
-
-            res.send(xmlFile);
-        });
-    });
+        }
+    );
 });
 
+app.get('/books', (req, res) => {
+    db.all(
+        'SELECT * FROM book',
+        (err, rows) => {
+            console.log(rows);
+            if(rows.length > 0){
+                //res.send(rows);
+                res.send(js2xmlparser.parse("books", rows));
+            } 
+            else {
+                res.send("Couldn't find anything...");
+            }
+        }
+    );
+});
 
+app.post('/post', (req, res) => {
+    res.send("Post request");
+})
 
+app.post('/add/authors/:id/:firstname/:lastname/:nationality', (req, res) => {
+    const idParam = req.params.id;
+    const firstnameParam = req.params.firstname;
+    const lastnameParam = req.params.lastname;
+    const nationalityParam = req.params.nationality;
 
+    db.run(
+        'INSERT INTO authors VALUES (authorID=$authorID, firstname=$firstname, lastname=$lastname, nationailty=$nationality)',
+        {
+            $authorID: idParam,
+            $firstname: firstnameParam,
+            $lastname: lastnameParam,
+            $nationality: nationalityParam
+        },
+        (err) => {
+            if (err){
+                console.log("Something wrong happened!");
+            }
+            else {
+                console.log("Author added!");
+            }
+        }
+    );
+});
 
-
-
-
+app.listen(port, () => console.log('Listening on port ' + port));

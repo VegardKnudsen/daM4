@@ -6,10 +6,11 @@ WORKDIR /restAPI
 COPY package.json ./
 RUN npm install
 RUN npm install sqlite3
-RUN npm install deasync
+RUN npm install express
+RUN npm install js2xmlparser
  
-COPY app.js bokbase ./
+COPY app.js books.db ./
 
-EXPOSE 7777
+EXPOSE 3000
 CMD ["npm", "start"]
 

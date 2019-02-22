@@ -9,15 +9,15 @@ cat << EOF
 <html>
  <head>
   <meta charset='utf-8'>
-  <title>MP4</title>
+  <title>CGI Form</title>
  </head>
  <body>
 
-  <form action="http://localhost:9000/books/all" method='get'>
-    <input type=submit name='fetchAllBooks' value='Get all books'>
+  <form action="http://localhost:3000/books/" method='get'>
+    <input type=submit value='Get all books'>
   </form> 
   <br>
-  <form action="http://localhost:9000/authors/all" method='get'>
+  <form action="http://localhost:3000/authors/" method='get'>
     <input type=submit name='fetchAllAuthors' value='Get all authors'>
   </form> 
   <br>
@@ -40,6 +40,6 @@ request="$REQUEST_METHOD /$extractedTable/$extractedId HTTP/1.1"
 
 echo "$request"
 
-resp=$(curl -X GET http://localhost:9000/$extractedTable/$extractedId)
+resp=$(curl -X GET http://localhost:3000/$extractedTable/$extractedId)
 
 echo "$resp"
