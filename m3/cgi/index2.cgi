@@ -47,15 +47,15 @@ else
   
   if [[ "$REQ" == *"GET"* ]] ; then
     echo "req is get"
-    resp=$(curl --request $REQ "http://127.0.0.1:3000/$TABLE/$ID")
+    resp=$(curl --request $REQ "http://172.17.0.2:3000/$TABLE/$ID")
     echo '<br>'
-    echo "curl --request $REQ http://127.0.0.1:3000/$TABLE/$ID"
+    echo "curl --request $REQ http://172.17.0.2:3000/$TABLE/$ID"
     echo '<br>'
   else
     echo "not get"
   fi
   echo '<br>'
-  echo "$resp"
+  echo $resp
   echo '<br>'
 fi
 echo '</body>'

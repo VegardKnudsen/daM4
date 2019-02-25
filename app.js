@@ -61,7 +61,8 @@ app.get('/books/:bookid', (req, res) => {
         (err, rows) => {
             //console.log(rows);
             if(rows.length > 0){
-                res.send(js2xmlparser.parse("book", rows));
+                var xmlResponse = js2xmlparser.parse("book", rows);
+                res.send(xmlResponse);
             } 
             else {
                 res.send("Couldn't find anything...")
@@ -90,7 +91,7 @@ app.post('/post', (req, res) => {
     res.send("Post request");
 })
 
-app.post('/add/authors/:id/:firstname/:lastname/:nationality', (req, res) => {
+app.post('/authors/:id/:firstname/:lastname/:nationality', (req, res) => {
     const idParam = req.params.id;
     const firstnameParam = req.params.firstname;
     const lastnameParam = req.params.lastname;
