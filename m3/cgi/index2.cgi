@@ -18,8 +18,8 @@ echo  "<form method=GET action=\"${SCRIPT}\">"\
       '</tr></table>'
 
 echo  '<input type="radio" name="request" value="GET" checked> Search<br>'\
-      '<input type="radio" name="request" value="POST"> Edit<br>'\
-      '<input type="radio" name="request" value="PUT"> Add<br>'\
+      '<input type="radio" name="request" value="PUT"> Edit<br>'\
+      '<input type="radio" name="request" value="POST"> Add<br>'\
       '<input type="radio" name="request" value="DELETE"> Delete'
 echo  '<br><input type="submit" value="Submit">'\
       '<input type="reset" value="Reset"></form>'
@@ -51,8 +51,16 @@ else
     echo '<br>'
     echo "curl --request $REQ http://172.17.0.2:3000/$TABLE/$ID"
     echo '<br>'
+  fi
+  if [[ "$REQ" == *"POST"* ]] ; then
+    echo "req is post"
+    resp=$(curl --data "table=$TABLE&id=$ID&firstname=$PARAM1&lastname=$PARAM2&nationality=$PARAM3" -X $REQ "http://172.17.0.2:3000/$TABLE")
+    #curl --data "param1=value1&param2=value2" http://hostname/resourc
+    echo '<br'>
+    echo "curl --data "table=$TABLE&id=$ID&firstname=$PARAM1&lastname=$PARAM2&nationality=$PARAM3" -X $REQ http://172.17.0.2:3000/"
+    echo '<br>'
   else
-    echo "not get"
+    echo "not post"
   fi
   echo '<br>'
   echo $resp
