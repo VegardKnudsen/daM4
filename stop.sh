@@ -1,6 +1,5 @@
-#! /bin/bash
+#!/bin/sh
 
-docker rm -f $(docker ps -aq)
-docker rmi $(docker images -q)
-docker volume rm $(docker volume ls -q)
+docker stop restapi
 
+docker rm restapi
