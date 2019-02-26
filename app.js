@@ -106,7 +106,7 @@ app.post('/authors', (req, res) => {
 
     console.log(data);
 
-    //db.run(sql, params, function(err))
+    //db.run(sql, params, function(err))i-bin/index2.cgi
     db.run(SQL, params, (err) => {
         if(err){
             console.log("Something went wrong!");
@@ -116,6 +116,30 @@ app.post('/authors', (req, res) => {
         }
     });
     res.send("ok");
+});
+
+app.post('/books', (req, res) => {
+    var SQL = `INSERT INTO books(bookID, booktitle, authorID) VALUES(?,?,?);`;
+    var data = {
+        bookID: req.body.bookID,
+        booktitle: req.body.booktitle,
+        authorID: req.body.authorID,
+    }
+    var params = [data.bookID, data.booktitle, data.authorID];
+
+    console.log(data);
+
+    //db.run(sql, params, function(err))
+    db.run(SQL, params, (err) => {
+        if(err){
+            console.log("Something went wrong!");
+            res.send("Something went wrong!")
+        }
+        else{
+            console.log("Data added!");
+            res.send("Ok!")
+        }
+    });
 });
 
 app.listen(port, () => console.log('Listening on port ' + port));
