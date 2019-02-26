@@ -54,7 +54,7 @@ else
   fi
   if [[ "$REQ" == *"POST"* ]] ; then
     echo "req is post"
-    resp=$(curl --data "id=$ID&firstname=$PARAM1&lastname=$PARAM2&nationality=$PARAM3" -X $REQ "http://172.17.0.2:3000/authors")
+    resp=$(curl --data "authorID=$ID&firstname=$PARAM1&lastname=$PARAM2&nationality=$PARAM3" -X $REQ "http://172.17.0.2:3000/authors")
     #curl --data "param1=value1&param2=value2" http://hostname/resourc
     echo '<br>'
     #echo "curl --data "table=$TABLE&id=$ID&firstname=$PARAM1&lastname=$PARAM2&nationality=$PARAM3" -X $REQ http://172.17.0.2:3000/"

@@ -3,10 +3,13 @@ const port = 3000;
 const express = require('express');
 const sqlite3 = require('sqlite3');
 const js2xmlparser = require('js2xmlparser');
+const bodyParser = require('body-parser');
 
 const db = new sqlite3.Database('books.db');
 const app = express();
 
+app.use(bodyParser.urlencoded({extend: false}));
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
     res.send('Default route');
@@ -91,29 +94,28 @@ app.post('/post', (req, res) => {
     res.send("Post request");
 })
 
-app.post('/authors/:id/:firstname/:lastname/:nationality', (req, res) => {
-    const idParam = req.params.id;
-    const firstnameParam = req.params.firstname;
-    const lastnameParam = req.params.lastname;
-    const nationalityParam = req.params.nationality;
+app.post('/authors', (req, res) => {
+    var SQL = `INSERT INTO author(authorID, firstname, lastname, nationality) VALUES(?,?,?,?);`;
+    var data = {
+        authorID: req.body.authorID,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        nationality: req.body.nationality 
+    }
+    var params = [data.authorID, data.firstname, data.lastname, data.nationality];
 
-    db.run(
-        'INSERT INTO authors VALUES (authorID=$authorID, firstname=$firstname, lastname=$lastname, nationailty=$nationality)',
-        {
-            $authorID: idParam,
-            $firstname: firstnameParam,
-            $lastname: lastnameParam,
-            $nationality: nationalityParam
-        },
-        (err) => {
-            if (err){
-                console.log("Something wrong happened!");
-            }
-            else {
-                console.log("Author added!");
-            }
+    console.log(data);
+
+    //db.run(sql, params, function(err))
+    db.run(SQL, params, (err) => {
+        if(err){
+            console.log("Something went wrong!");
         }
-    );
+        else{
+            console.log("Data added!");
+        }
+    });
+    res.send("ok");
 });
 
 app.listen(port, () => console.log('Listening on port ' + port));
