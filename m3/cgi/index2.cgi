@@ -52,12 +52,16 @@ else
     echo "curl --request $REQ http://172.17.0.2:3000/$TABLE/$ID"
     echo '<br>'
   fi
+
   if [[ "$REQ" == *"POST"* ]] ; then
     echo "req is post"
-    resp=$(curl --data "authorID=$ID&firstname=$PARAM1&lastname=$PARAM2&nationality=$PARAM3" -X $REQ "http://172.17.0.2:3000/authors")
-    #curl --data "param1=value1&param2=value2" http://hostname/resourc
-    echo '<br>'
-    #echo "curl --data "table=$TABLE&id=$ID&firstname=$PARAM1&lastname=$PARAM2&nationality=$PARAM3" -X $REQ http://172.17.0.2:3000/"
+    if [[ "$TABLE" == *"authors"* ]] ; then
+      resp=$(curl --data "authorID=$ID&firstname=$PARAM1&lastname=$PARAM2&nationality=$PARAM3" -X $REQ "http://172.17.0.2:3000/authors")
+    elif [[ "$TABLE" == *"books"* ]] ; then
+      resp=$(curl --data "bookID=$ID&booktitle=$PARAM1&authorID=$PARAM2" -X $REQ "http://172.17.0.2:3000/books")
+    else
+      echo "Table name incorrect!"
+    fi
     echo '<br>'
   else
     echo "not post"
