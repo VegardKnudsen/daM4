@@ -2,27 +2,56 @@
 
 echo  "Content-type: text/html"
 echo 
-echo  '<html>'
-echo  '<head>'
-echo  '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
-echo  '<title>Form: CGI </title>'
-echo  '</head>'
-echo  '<body>'
-echo  "<form method=GET action=\"${SCRIPT}\">"\
-      '<table nowrap>'\
-      '<tr><td>TABLE</TD><TD><input type="text" name="table" size=12></td></tr>'\
-      '<tr><td>ID</td><td><input type="text" name="id" size=12 value=""></td>'\
-      '<tr><td>param1</td><td><input type="text" name="param1" size=12 value=""></td>'\
-      '<tr><td>param2</td><td><input type="text" name="param2" size=12 value=""></td>'\
-      '<tr><td>param3</td><td><input type="text" name="param3" size=12 value=""></td>'\
-      '</tr></table>'
-
-echo  '<input type="radio" name="request" value="GET" checked> Search<br>'\
-      '<input type="radio" name="request" value="PUT"> Edit<br>'\
-      '<input type="radio" name="request" value="POST"> Add<br>'\
-      '<input type="radio" name="request" value="DELETE"> Delete'
-echo  '<br><input type="submit" value="Submit">'\
-      '<input type="reset" value="Reset"></form>'
+echo '<html>'\
+     '<head>'\
+     '<style>'\
+    '		form {'\
+    '  			border: 3px solid #f1f1f1;'\
+    '		}'\
+    '		h1{'\
+    '  			color: #4f92ff;'\
+    '		}'\
+    '		button {'\
+    '			background-color: #4f92ff;'\
+    '			color: white;'\
+    '			padding: 15px 32px;'\
+    '			text-align: center;'\
+    '			display: inline-block;'\
+    '			font-size: 16px;'\
+    '			margin: 8px 0;'\
+    '			cursor: pointer;'\
+    '		}'\
+    '		input{'\
+    '			background-color: #e8f0ff;'\
+    '		}'\
+    '	</style>'\
+    '</head>'\
+    \
+    '<body>'\
+    '	<h1>'\
+    '		GUTTA LEVERER BIBBBLIOTEKKK SI'\
+    '	</h1>'\
+    ' <form action="action_page.php">'\
+    '  <div class="container">'\
+    '    <input type="text" placeholder="Username" name="uname" required>'\
+    '    <input type="password" placeholder="Password" name="psw" required>'\
+    '    <button type="login">Login</button>'\
+    '  </div>'\
+    '</form>'
+echo " <form method=GET action=\"${SCRIPT}\">"\
+    '  	<select name=table>'\
+    '  		<option value="authors">Authors</option>'\
+    '  		<option value="books">Books</option>'\
+    '  	</select><br><br>'\
+    '  <input type="text" placeholder="ID" name="id"><br>'\
+    '  <input type="radio" name="request" value="GET" checked> Search<br>'\
+    '  <input type="radio" name="request" value="POST"> Edit<br>'\
+    '  <input type="radio" name="request" value="PUT"> Add<br>'\
+    '  <input type="radio" name="request" value="DELETE"> Delete<br>'\
+    '  <button type="submit">Submit</button>'\
+    '</form>'\
+    '</body>'\
+    '</html>'
  
 
 if [ -z "$QUERY_STRING" ] ; then
