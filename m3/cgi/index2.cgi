@@ -3,8 +3,10 @@
 echo  "Content-type: text/html"
 echo 
 echo '<html>'\
-     '<head>'\
-     '<style>'\
+    '<head>'\
+    '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'\
+    '<title>GUTTA LEVERER VARENE!</title>'\
+    '<style>'\
     '		form {'\
     '  			border: 3px solid #f1f1f1;'\
     '		}'\
@@ -48,8 +50,8 @@ echo " <form method=GET action=\"${SCRIPT}\">"\
     '  <input type="text" placeholder="Parameter 2" name="param2"><br>'\
     '  <input type="text" placeholder="Parameter 3" name="param3"><br>'\
     '  <input type="radio" name="request" value="GET" checked> Search<br>'\
-    '  <input type="radio" name="request" value="POST"> Edit<br>'\
-    '  <input type="radio" name="request" value="PUT"> Add<br>'\
+    '  <input type="radio" name="request" value="PUT"> Edit<br>'\
+    '  <input type="radio" name="request" value="POST"> Add<br>'\
     '  <input type="radio" name="request" value="DELETE"> Delete<br>'\
     '  <button type="submit">Submit</button>'\
     '</form>'\
@@ -78,7 +80,6 @@ else
   echo '<br>'
   
   if [[ "$REQ" == *"GET"* ]] ; then
-    echo "req is get"
     resp=$(curl --request $REQ "http://172.17.0.2:3000/$TABLE/$ID")
     echo '<br>'
     echo "curl --request $REQ http://172.17.0.2:3000/$TABLE/$ID"
@@ -86,7 +87,6 @@ else
   fi
 
   if [[ "$REQ" == *"POST"* ]] ; then
-    echo "req is post"
     if [[ "$TABLE" == *"authors"* ]] ; then
       resp=$(curl --data "authorID=$ID&firstname=$PARAM1&lastname=$PARAM2&nationality=$PARAM3" -X $REQ "http://172.17.0.2:3000/authors")
     elif [[ "$TABLE" == *"books"* ]] ; then
@@ -95,9 +95,31 @@ else
       echo "Table name incorrect!"
     fi
     echo '<br>'
-  else
-    echo "not post"
   fi
+
+  if [[ "$REQ" == *"PUT"* ]] ; then
+    if [[ "$TABLE" == *"authors"* ]] ; then
+      resp=$(curl --data "authorID=$ID&firstname=$PARAM1&lastname=$PARAM2&nationality=$PARAM3" -X $REQ "http://172.17.0.2:3000/authors")
+    elif [[ "$TABLE" == *"books"* ]] ; then
+      resp=$(curl --data "bookID=$ID&booktitle=$PARAM1&authorID=$PARAM2" -X $REQ "http://172.17.0.2:3000/books")
+    else
+      echo "Table name incorrect!"
+    fi
+    echo '<br>'
+  fi
+
+  if [[ "$REQ" == *"DELETE"* ]] ; then
+    echo "req is delete"
+    if [[ "$TABLE" == *"authors"* ]] ; then
+      resp=$(curl --data "authorID=$ID" -X $REQ "http://172.17.0.2:3000/authors")
+    elif [[ "$TABLE" == *"books"* ]] ; then
+      resp=$(curl --data "bookID=$ID" -X $REQ "http://172.17.0.2:3000/books")
+    else
+      echo "WRONG!"
+    fi
+    echo '<br>'
+  fi
+
   echo '<br>'
   echo $resp
   echo '<br>'
