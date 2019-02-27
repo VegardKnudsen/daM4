@@ -48,6 +48,9 @@ echo " <form method=GET action=\"${SCRIPT}\">"\
     '  <input type="radio" name="request" value="POST"> Edit<br>'\
     '  <input type="radio" name="request" value="PUT"> Add<br>'\
     '  <input type="radio" name="request" value="DELETE"> Delete<br>'\
+    '  <input type="text" placeholder="Parameter 1" name="param1"><br>'\
+    '  <input type="text" placeholder="Parameter 2" name="param2"><br>'\
+    '  <input type="text" placeholder="Parameter 3" name="param3"><br>'\
     '  <button type="submit">Submit</button>'\
     '</form>'\
     '</body>'\
