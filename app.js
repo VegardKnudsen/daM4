@@ -119,11 +119,11 @@ app.post('/authors', (req, res) => {
 });
 
 app.post('/books', (req, res) => {
-    var SQL = `INSERT INTO books(bookID, booktitle, authorID) VALUES(?,?,?);`;
+    var SQL = `INSERT INTO book(bookID, booktitle, authorID) VALUES(?,?,?);`;
     var data = {
         bookID: req.body.bookID,
         booktitle: req.body.booktitle,
-        authorID: req.body.authorID,
+        authorID: req.body.authorID
     }
     var params = [data.bookID, data.booktitle, data.authorID];
 
