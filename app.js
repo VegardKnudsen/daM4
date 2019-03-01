@@ -11,13 +11,38 @@ const app = express();
 app.use(bodyParser.urlencoded({extend: false}));
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-    res.send('Default route');
+
+/*
+*
+*LOGIN
+*
+*/
+app.post('/login', (req,res) => {
+	var data = {
+		userID: req.body.userID,
+		passwordhash: req.body.passwordhash
+	}
+
+	var params = [data.userID, data.passwordhash];
+	console.log("Cookie: ", req.cookies);
+	var SQL= `SELECT passwordhash FROM user WHERE userID = ?`;
+	
+	db.all(SQL, params, (err, row) => {
+		if (passwordhash == row.passwordhash) {
+			console.log("Everything good: " + passwordhash);
+			res.send("Ok");
+		} else {
+			console.log("Shit happend" + passwordhash);
+		}
+	});
 });
 
-app.post('/post', (req, res) => {
-    res.send("Post request");
-})
+/*
+*
+*LOGOUT
+*
+*/
+
 
 /*
 *
