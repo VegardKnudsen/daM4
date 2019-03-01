@@ -32,12 +32,12 @@ echo '<html>'\
     '<body>'\
     '	<h1>'\
     '		GUTTA LEVERER BIBBBLIOTEKKK SI'\
-    '	</h1>'\
-    ' <form action="action_page.php">'\
+    '	</h1>'
+echo " <form method=POST action=\"${SCRIPT}\">"\
     '  <div class="container">'\
     '    <input type="text" placeholder="Username" name="uname" required>'\
     '    <input type="password" placeholder="Password" name="psw" required>'\
-    '    <button type="login">Login</button>'\
+    '    <button type="login" name="request" value="LOGIN">Login</button>'\
     '  </div>'\
     '</form>'
 echo " <form method=GET action=\"${SCRIPT}\">"\
@@ -63,6 +63,8 @@ if [ -z "$QUERY_STRING" ] ; then
   exit 0
 else
 
+  USERNAME=`echo "$QUERY_STRING" | sed -n 's/^.*uname=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
+  PASSWORD=`echo "$QUERY_STRING" | sed -n 's/^.*psw=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
   TABLE=`echo "$QUERY_STRING" | sed -n 's/^.*table=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
   ID=`echo "$QUERY_STRING" | sed -n 's/^.*id=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
   REQ=`echo "$QUERY_STRING" | sed -n 's/^.*request=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
@@ -79,6 +81,12 @@ else
   echo "testing for space"
   echo '<br>'
   
+  if [[ "$REQ" == *"LOGIN"* ]] ; then
+    resp=$(curl --data "userID=$USERNAME&passwordhash=$PASSWORD" -X POST "http://172.17.0.2:3000/login")
+    echo '<br>'
+    echo "curl -u ${USERNAME}:${PASSWORD} http://172.17.0.2:3000/login"
+    echo '<br>'
+  fi
   if [[ "$REQ" == *"GET"* ]] ; then
     resp=$(curl --request $REQ "http://172.17.0.2:3000/$TABLE/$ID")
     echo '<br>'
@@ -91,8 +99,6 @@ else
       resp=$(curl --data "authorID=$ID&firstname=$PARAM1&lastname=$PARAM2&nationality=$PARAM3" -X $REQ "http://172.17.0.2:3000/authors")
     elif [[ "$TABLE" == *"books"* ]] ; then
       resp=$(curl --data "bookID=$ID&booktitle=$PARAM1&authorID=$PARAM2" -X $REQ "http://172.17.0.2:3000/books")
-    else
-      echo "Table name incorrect!"
     fi
     echo '<br>'
   fi
