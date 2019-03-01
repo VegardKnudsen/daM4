@@ -244,27 +244,47 @@ app.post('/books', (req, res) => {
 * PUT
 */
 app.put('/books', (req, res) => {
-    var SQL = `UPDATE book SET booktitle = ?, authorID = ? WHERE bookID = ?`;
     var data = {
         booktitle: req.body.booktitle, 
         authorID: req.body.authorID,
         bookID: req.body.bookID
     }
-    var params = [data.booktitle, data.authorID, data.bookID];
+    console.log(req.body.booktitle);
+    if (req.body.booktitle) {
+        var SQL = `UPDATE book SET booktitle = ? WHERE bookID = ?`;
+        var params = [data.booktitle, data.bookID];
+        console.log(data);
 
-    console.log(data);
-
-    //db.run(sql, params, function(err))
-    db.run(SQL, params, (err) => {
+        //db.run(sql, params, function(err))
+        db.run(SQL, params, (err) => {
         if(err){
             console.log("Something went wrong!");
             res.send("Something went wrong!")
         }
         else{
             console.log("Data added!");
-            res.send("Ok!")
+            res.send("Ok, booktitle updated!")
         }
-    });
+        });
+
+    }
+    if (req.body.authorID) {
+        var SQL = `UPDATE book SET authorID = ? WHERE bookID = ?`;
+        var params = [data.authorID, data.bookID];
+        console.log(data);
+
+        //db.run(sql, params, function(err))
+        db.run(SQL, params, (err) => {
+        if(err){
+            console.log("Something went wrong!");
+            res.send("Something went wrong!")
+        }
+        else{
+            console.log("Data added!");
+            res.send("Ok, authorID updated!")
+        }
+        });
+    }
 });
 
 /*
