@@ -11,6 +11,7 @@ db.serialize(() => {
     db.run("INSERT INTO author VALUES (2, 'Jo', 'Nesbø', 'Norway')");
     db.run("INSERT INTO book VALUES (1, 'The Sun Also Rises', 1)");
     db.run("INSERT INTO book VALUES (2, 'Hodejegerne', 2)");
+    db.run("INSERT INTO user VALUES (1, 'test', 'Vegard', 'Steinsto')");
 
     console.log('Successfully created tables, and inserted data into author and book tables...');
     
