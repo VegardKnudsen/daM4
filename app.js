@@ -139,28 +139,54 @@ app.post('/authors', (req, res) => {
 * PUT
 */
 app.put('/authors', (req, res) => {
-    var SQL = `UPDATE author SET firstname = ?, lastname = ?, nationality = ? WHERE authorID = ?`;
     var data = {
         authorID: req.body.authorID,
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         nationality: req.body.nationality 
     }
-    var params = [data.firstname, data.lastname, data.nationality, data.authorID];
+    if (req.body.firstname){
+        var SQL = `UPDATE author SET firstname = ? WHERE authorID = ?`;
+        var params = [data.firstname, data.authorID];
 
-    console.log(data);
+        db.run(SQL, params, (err) => {
+            if(err){
+                console.log("Something went wrong!");
+            }
+            else{
+                console.log("Data added!");
+            }
+        });
+    }
 
-    //db.run(sql, params, function(err))
-    db.run(SQL, params, (err) => {
-        if(err){
-            console.log("Something went wrong!");
-            res.send("Something went wrong!")
-        }
-        else{
-            console.log("Data added!");
-            res.send("Ok!")
-        }
-    });
+    if (req.body.lastname){
+        var SQL = `UPDATE author SET lastname = ? WHERE authorID = ?`;
+        var params = [data.lastname, data.authorID];
+
+        db.run(SQL, params, (err) => {
+            if(err){
+                console.log("Something went wrong!");
+            }
+            else{
+                console.log("Data added!");
+            }
+        });
+    }
+
+    if (req.body.nationality){
+        var SQL = `UPDATE author SET nationality = ? WHERE authorID = ?`;
+        var params = [data.nationality, data.authorID];
+
+        db.run(SQL, params, (err) => {
+            if(err){
+                console.log("Something went wrong!");
+            }
+            else{
+                console.log("Data added!");
+            }
+        });
+    }
+    res.send("all good homie");
 });
 
 /*
@@ -294,15 +320,12 @@ app.put('/books', (req, res) => {
         var params = [data.booktitle, data.bookID];
         console.log(data);
 
-        //db.run(sql, params, function(err))
         db.run(SQL, params, (err) => {
         if(err){
             console.log("Something went wrong!");
-            res.send("Something went wrong!")
         }
         else{
             console.log("Data added!");
-            res.send("Ok, booktitle updated!")
         }
         });
 
@@ -316,14 +339,13 @@ app.put('/books', (req, res) => {
         db.run(SQL, params, (err) => {
         if(err){
             console.log("Something went wrong!");
-            res.send("Something went wrong!")
         }
         else{
             console.log("Data added!");
-            res.send("Ok, authorID updated!")
         }
         });
     }
+    res.send("All good homie");
 });
 
 /*
