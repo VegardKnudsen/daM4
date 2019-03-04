@@ -5,7 +5,7 @@ echo
 echo '<html>'\
     '<head>'\
     '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'\
-    '<title>GUTTA LEVERER VARENE!</title>'\
+    '<title>CGI: Form</title>'\
     '<style>'\
     '		form {'\
     '  			border: 3px solid #f1f1f1;'\
@@ -28,16 +28,15 @@ echo '<html>'\
     '		}'\
     '	</style>'\
     '</head>'\
-    \
     '<body>'\
     '	<h1>'\
     '		GUTTA LEVERER BIBBBLIOTEKKK SI'\
     '	</h1>'
-echo " <form method=POST action=\"${SCRIPT}\">"\
+echo " <form method=LOGIN action=\"${SCRIPT}\">"\
     '  <div class="container">'\
     '    <input type="text" placeholder="Username" name="uname" required>'\
     '    <input type="password" placeholder="Password" name="psw" required>'\
-    '    <button type="login" name="request" value="LOGIN">Login</button>'\
+    '    <button type="submit" name="request" value="LOGIN">Login</button>'\
     '  </div>'\
     '</form>'
 echo " <form method=GET action=\"${SCRIPT}\">"\
@@ -72,25 +71,12 @@ else
   PARAM2=`echo "$QUERY_STRING" | sed -n 's/^.*param2=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
   PARAM3=`echo "$QUERY_STRING" | sed -n 's/^.*param3=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
 
-  echo '<br>'
-  echo "table: " $TABLE
-  echo '<br>'
-  echo "id: " $ID
-  echo '<br>'
-  echo "request: " $REQ
-  echo "testing for space"
-  echo '<br>'
-  
   if [[ "$REQ" == *"LOGIN"* ]] ; then
-    resp=$(curl --data "userID=$USERNAME&passwordhash=$PASSWORD" -X POST "http://172.17.0.2:3000/login")
-    echo '<br>'
-    echo "curl -u ${USERNAME}:${PASSWORD} http://172.17.0.2:3000/login"
+    resp=$(curl --data "userID=$USERNAME&passwordhash=$PASSWORD" POST "http://172.17.0.2:3000/login")
     echo '<br>'
   fi
   if [[ "$REQ" == *"GET"* ]] ; then
     resp=$(curl --request $REQ "http://172.17.0.2:3000/$TABLE/$ID")
-    echo '<br>'
-    echo "curl --request $REQ http://172.17.0.2:3000/$TABLE/$ID"
     echo '<br>'
   fi
 
@@ -115,7 +101,6 @@ else
   fi
 
   if [[ "$REQ" == *"DELETE"* ]] ; then
-    echo "req is delete"
     if [[ "$TABLE" == *"authors"* ]] ; then
       resp=$(curl --data "authorID=$ID" -X $REQ "http://172.17.0.2:3000/authors")
     elif [[ "$TABLE" == *"books"* ]] ; then
