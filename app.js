@@ -4,37 +4,51 @@ const express = require('express');
 const sqlite3 = require('sqlite3');
 const js2xmlparser = require('js2xmlparser');
 const bodyParser = require('body-parser');
-
 const db = new sqlite3.Database('books.db');
 const app = express();
 
 app.use(bodyParser.urlencoded({extend: false}));
 app.use(bodyParser.json());
 
-
 /*
 *
 *LOGIN
 *
 */
-app.post('/login', (req,res) => {
-	var data = {
-		userID: req.body.userID,
-		passwordhash: req.body.passwordhash
-	}
+app.post('/login', (req, res) => {
+    var SQL = `SELECT passwordhash, userID FROM user WHERE userID = ?`;
+    var data = {
+        userID: req.body.userID,
+ 		passwordhash: req.body.passwordhash
+    }
 
-	var params = [data.userID, data.passwordhash];
-	console.log("Cookie: ", req.cookies);
-	var SQL= `SELECT passwordhash FROM user WHERE userID = ?`;
-	
-	db.all(SQL, params, (err, row) => {
-		if (passwordhash == row.passwordhash) {
-			console.log("Everything good: " + passwordhash);
-			res.send("Ok");
-		} else {
-			console.log("Shit happend" + passwordhash);
-		}
-	});
+    var params = [data.userID];
+
+    db.get(SQL, params, (err, row) => {
+        if(row != null) {
+        	let username = row.userID;
+        	let password = row.passwordhash;
+
+        	if (data.userID == username){
+        		console.log("Username valid");
+        		if (data.passwordhash == password){
+        			console.log("Password valid");
+        			res.redirect('/cgi-bin2/index2.cgi');
+        		} else {
+        			console.log("Wrong username or password");
+        			res.send("Wrong username or password");
+        		}
+        	} else {
+        		console.log("Wrong username or password");
+        		res.send("Wrong username or password");
+        	}
+        } else if(err){
+            console.log("Something went wrong!");
+        } else {
+        	console.log("FUCKER!");
+        	res.send("Contact admin u fucking hacker noob!");
+        }
+    });
 });
 
 /*
@@ -269,27 +283,47 @@ app.post('/books', (req, res) => {
 * PUT
 */
 app.put('/books', (req, res) => {
-    var SQL = `UPDATE book SET booktitle = ?, authorID = ? WHERE bookID = ?`;
     var data = {
         booktitle: req.body.booktitle, 
         authorID: req.body.authorID,
         bookID: req.body.bookID
     }
-    var params = [data.booktitle, data.authorID, data.bookID];
+    console.log(req.body.booktitle);
+    if (req.body.booktitle) {
+        var SQL = `UPDATE book SET booktitle = ? WHERE bookID = ?`;
+        var params = [data.booktitle, data.bookID];
+        console.log(data);
 
-    console.log(data);
-
-    //db.run(sql, params, function(err))
-    db.run(SQL, params, (err) => {
+        //db.run(sql, params, function(err))
+        db.run(SQL, params, (err) => {
         if(err){
             console.log("Something went wrong!");
             res.send("Something went wrong!")
         }
         else{
             console.log("Data added!");
-            res.send("Ok!")
+            res.send("Ok, booktitle updated!")
         }
-    });
+        });
+
+    }
+    if (req.body.authorID) {
+        var SQL = `UPDATE book SET authorID = ? WHERE bookID = ?`;
+        var params = [data.authorID, data.bookID];
+        console.log(data);
+
+        //db.run(sql, params, function(err))
+        db.run(SQL, params, (err) => {
+        if(err){
+            console.log("Something went wrong!");
+            res.send("Something went wrong!")
+        }
+        else{
+            console.log("Data added!");
+            res.send("Ok, authorID updated!")
+        }
+        });
+    }
 });
 
 /*
