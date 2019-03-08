@@ -21,15 +21,10 @@ app.post('/login', (req, res) => {
         userID: req.body.logininfo.userid[0],
  		passwordhash: req.body.logininfo.passwordhash[0]
     }
-
-    console.log(data.userID);
-    console.log(data.passwordhash);
-
-    var params = [data.userID];
-
     console.log("UserID: " + data.userID + " Password: " + data.passwordhash);
     console.log("Cookie: " + req.body.cookies);
 
+    var params = [data.userID];
     var SQL = `SELECT passwordhash, userID FROM user WHERE userID = ?`;
     db.get(SQL, params, (err, row) => {
         if(row != null) {
