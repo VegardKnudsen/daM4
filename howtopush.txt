@@ -1,0 +1,6 @@
+git add . 
+git commit -m "suck a dick"
+git push https://github.com/VegardKnudsen/daM4.git master:llundberg -f
+
+brukernavn er leiflundberg
+passord er Je1a2**
